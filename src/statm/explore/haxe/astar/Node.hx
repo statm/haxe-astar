@@ -15,7 +15,7 @@ class Node extends IntPoint
 	public var f:Float = 0.;
 	public var g:Float = 0.;
 	
-	public function toString():String
+	override public function toString():String
 	{
 		var result:String;
 		result = "[Node(" + this.x + "," + this.y + ")";
@@ -23,9 +23,18 @@ class Node extends IntPoint
 		{
 			result += ", parent=(" + parent.x + "," + parent.y + ")";
 		}
-		result += (walkable ? ", W" : ", X");
+		//result += (walkable ? ", W" : ", X");
+		result += ", f=" + f;
 		result += "]";
 		
 		return result;
+	}
+	
+	public function extractPoint():IntPoint
+	{
+		var pt:IntPoint = new IntPoint();
+		pt.x = this.x; 
+		pt.y = this.y;
+		return pt;
 	}
 }

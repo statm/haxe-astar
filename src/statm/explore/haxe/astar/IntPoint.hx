@@ -20,4 +20,9 @@ class IntPoint
 	{
 		return (x == pt.x && y == pt.y);
 	}
+	
+	public function toString():String
+	{
+		return "(" + this.x + "," + this.y + ")";
+	}
 }
