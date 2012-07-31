@@ -13,10 +13,10 @@ class Manhattan implements IHeuristic
 	{
 	}
 	
-	public function getCost(node1:Node, node2:Node):Int
+	public function getCost(node1:Node, node2:Node):Float
 	{
-		var dx = node1.x - node2.x;
-		var dy = node1.y - node2.y;
+		var dx:Int = node1.x - node2.x;
+		var dy:Int = node1.y - node2.y;
 		
 		return (dx > 0 ? dx : -dx) + (dy > 0 ? dy : -dy);
 	}

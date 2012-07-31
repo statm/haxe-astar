@@ -4,6 +4,10 @@ import flash.utils.TypedDictionary;
 import flash.Vector;
 import flash.Vector;
 import flash.Vector;
+import flash.Vector;
+import flash.Vector;
+import flash.Vector;
+import flash.Vector;
 import statm.explore.haxe.astar.heuristics.Diagonal;
 import statm.explore.haxe.astar.heuristics.IHeuristic;
 import statm.explore.haxe.astar.heuristics.Manhattan;
@@ -24,7 +28,7 @@ class AStar
 	private var _width:Int;
 	private var _height:Int;
 	
-	private var _nodeArray:Array<Array<Node>>;
+	public var _nodeArray:Array<Array<Node>>;
 	
 	private function new(map:IAStarClient)
 	{
@@ -55,8 +59,8 @@ class AStar
 	private var _startNode:Node;
 	private var _destNode:Node;
 	
-	private var _openList:Array<Node>;
-	private var _closedList:Array<Node>;
+	public var _openList:Array<Node>;
+	public var _closedList:Array<Node>;
 	
 	private var _heuristic:IHeuristic;
 	
@@ -82,32 +86,55 @@ class AStar
 		
 		_openList.push(_startNode);
 		
-		trace("Start Path Searching: " + _startNode + "-->" + _destNode);
-		
 		return searchPath();
 	}
 	
-	private function searchPath():Vector<IntPoint>
+	inline private function getPath():Vector<IntPoint>
 	{
-		var nextNode:Node = null;
-		var node:Node = _startNode;
+		var path:Vector<IntPoint> = new Vector<IntPoint>();
 		
+		var node:Node = _destNode;
+		path[0] = node.toIntPoint();
+		
+		var completed:Bool = false;
+		while (!completed)
+		{
+			node = node.parent;
+			path.unshift(node.toIntPoint());
+			
+			if (node == _startNode)
+			{
+				completed = true;
+			}
+		}
+		
+		return path;
+	}
+	
+	// 寻路迭代
+	public var completed:Bool = false;
+	
+	private function sortFunc(x:Node, y:Node):Int
+	{
+		return Std.int(x.f - y.f);
+	}
+	
+	inline private function searchPath():Vector<IntPoint>
+	{
 		var minX:Int, maxX:Int, minY:Int, maxY:Int;
 		var g:Float, f:Float, cost:Float;
 		
-		var completed:Bool = false;
+		var nextNode:Node = null;
+		var currentNode:Node = _startNode;
 		
-		var sortFunc = function(x:Node, y:Node):Int
-		{
-			return Std.int(x.f - y.f);
-		};
-		
+		// 开格子
+		completed = false;
 		while (!completed)
 		{
-			minX = node.x - 1 < 0 ? 0 : node.x - 1;
-			maxX = node.x + 1 >= _width ? _width - 1 : node.x + 1;
-			minY = node.y - 1 < 0 ? 0 : node.y - 1;
-			maxY = node.y + 1 >= _height ? _height - 1 : node.y + 1;
+			minX = currentNode.x - 1 < 0 ? 0 : currentNode.x - 1;
+			maxX = currentNode.x + 1 >= _width ? _width - 1 : currentNode.x + 1;
+			minY = currentNode.y - 1 < 0 ? 0 : currentNode.y - 1;
+			maxY = currentNode.y + 1 >= _height ? _height - 1 : currentNode.y + 1;
 			
 			for (y in minY...maxY + 1)
 			{
@@ -115,21 +142,19 @@ class AStar
 				{
 					nextNode = _nodeArray[x][y];
 					
-					if (nextNode == node
-						|| !nextNode.walkable
-						|| !_nodeArray[y][node.x].walkable
-						|| !_nodeArray[node.y][x].walkable)
+					if (nextNode == currentNode
+						|| !nextNode.walkable)
 					{
 						continue;
 					}
 					
 					cost = ADJ_COST;
-					if (!(node.x == nextNode.x || node.y == nextNode.y))
+					if (!(currentNode.x == nextNode.x || currentNode.y == nextNode.y))
 					{
 						cost = DIAG_COST;
 					}
 					
-					g = node.g + cost;
+					g = currentNode.g + cost;
 					f = g + _heuristic.getCost(nextNode, _destNode);
 					
 					if (Lambda.indexOf(_openList, nextNode) != -1
@@ -139,21 +164,21 @@ class AStar
 						{
 							nextNode.f = f;
 							nextNode.g = g;
-							nextNode.parent = node;
+							nextNode.parent = currentNode;
 						}
 					}
 					else
 					{
 						nextNode.f = f;
 						nextNode.g = g;
-						nextNode.parent = node;
+						nextNode.parent = currentNode;
 						
 						_openList.push(nextNode);
 					}
-					
-					_closedList.push(nextNode);
 				}
 			}
+			
+			_closedList.push(currentNode);
 			
 			if (_openList.length == 0)
 			{
@@ -161,9 +186,9 @@ class AStar
 			}
 			
 			_openList.sort(sortFunc);
-			node = _openList.shift();
+			currentNode = _openList.shift();
 			
-			if (node == _destNode)
+			if (currentNode == _destNode)
 			{
 				completed = true;
 			}
@@ -171,31 +196,6 @@ class AStar
 		
 		return getPath();
 	}
-	
-	private function getPath():Vector<IntPoint>
-	{
-		var result:Vector<IntPoint> = new Vector<IntPoint>();
-		
-		var node:Node = _destNode;
-		result[0] = node.extractPoint();
-		
-		var completed:Bool = false;
-		while (!completed)
-		{
-			node = node.parent;
-			result.unshift(node.extractPoint());
-			
-			if (node == _startNode)
-			{
-				completed = true;
-			}
-		}
-		
-		trace("Path: " + result.join("->"));
-		
-		return result;
-	}
-	
 	
 	// 实例字典
 	private static var _instances:TypedDictionary<IAStarClient, AStar> = new TypedDictionary<IAStarClient, AStar>();

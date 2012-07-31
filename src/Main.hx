@@ -1,18 +1,24 @@
 package ;
 
 import flash.display.Graphics;
+import flash.display.Shape;
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
+import flash.events.Event;
+import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
 import flash.Lib;
+import flash.text.TextField;
+import flash.ui.Keyboard;
 import flash.Vector;
 import statm.explore.haxe.astar.AStar;
 import statm.explore.haxe.astar.IAStarClient;
 import statm.explore.haxe.astar.IntPoint;
+import statm.explore.haxe.astar.Node;
 
 /**
- * ...
+ * A* 寻路测试。
  * @author statm
  */
 
@@ -28,9 +34,11 @@ class Main
 		init();
 	}
 	
+	private static var map:MapDisplay;
+	
 	private static function init():Void
 	{
-		var map = new MapDisplay(10, 10);
+		map = new MapDisplay(15, 10);
 		map.x = map.y = 10;
 		Lib.current.addChild(map);
 		map.drawMap();
@@ -40,9 +48,12 @@ class Main
 class MapDisplay extends Sprite, implements IAStarClient
 {
 	private inline static var THRESHOLD:Float = 0.2;
+	private inline static var GRID_SIZE:Int = 30;
 	
 	public var rowTotal(default, null):Int;
 	public var colTotal(default, null):Int;
+	
+	private var stateOverlay:Shape;
 	
 	public function isWalkable(x:Int, y:Int):Bool
 	{
@@ -59,6 +70,8 @@ class MapDisplay extends Sprite, implements IAStarClient
 		colTotal = col;
 		shuffle();
 		
+		addChild(stateOverlay = new Shape());
+		
 		this.addEventListener(MouseEvent.CLICK, clickHandler);
 	}
 	
@@ -74,7 +87,7 @@ class MapDisplay extends Sprite, implements IAStarClient
 	}
 	
 	private var startPoint:IntPoint;
-	private var startPointSet:Bool = false;
+	private var startPointSet:Bool;
 	
 	private function clickHandler(event:MouseEvent):Void
 	{
@@ -97,9 +110,11 @@ class MapDisplay extends Sprite, implements IAStarClient
 			if (path == null)
 			{
 				trace("Path not found.");
-				return;
 			}
-			drawPath(path);
+			else
+			{
+				drawPath(path);
+			}
 		}
 		else
 		{
@@ -116,8 +131,8 @@ class MapDisplay extends Sprite, implements IAStarClient
 	private function getGridCoord(x:Float, y:Float):IntPoint
 	{
 		var result:IntPoint = new IntPoint();
-		result.x = Std.int(x / 10);
-		result.y = Std.int(y / 10);
+		result.x = Std.int(x / GRID_SIZE);
+		result.y = Std.int(y / GRID_SIZE);
 		
 		return result;
 	}
@@ -133,14 +148,14 @@ class MapDisplay extends Sprite, implements IAStarClient
 		g.clear();
 		
 		g.beginFill(BACKGROUND);
-		g.drawRect(0, 0, colTotal * 10, rowTotal * 10);
+		g.drawRect(0, 0, colTotal * GRID_SIZE, rowTotal * GRID_SIZE);
 		g.endFill();
 		
 		var t:Int = rowTotal * colTotal;
 		for (i in 0...t)
 		{
 			var r:Int = Math.floor(i / colTotal);
-			var c:Int = i % rowTotal;
+			var c:Int = i % colTotal;
 			if (!mapData[i])
 			{
 				drawGrid(c, r, BLOCK);
@@ -149,21 +164,21 @@ class MapDisplay extends Sprite, implements IAStarClient
 		
 		g.lineStyle(1, LINE);
 		g.moveTo(0, 0);
-		g.lineTo(0, rowTotal * 10);
-		g.lineTo(colTotal * 10, rowTotal * 10);
-		g.lineTo(colTotal * 10, 0);
+		g.lineTo(0, rowTotal * GRID_SIZE);
+		g.lineTo(colTotal * GRID_SIZE, rowTotal * GRID_SIZE);
+		g.lineTo(colTotal * GRID_SIZE, 0);
 		g.lineTo(0, 0);
 		
 		g.lineStyle(1, LINE);
 		for (i in 1...rowTotal)
 		{
-			g.moveTo(0, i * 10);
-			g.lineTo(colTotal * 10, i * 10);
+			g.moveTo(0, i * GRID_SIZE);
+			g.lineTo(colTotal * GRID_SIZE, i * GRID_SIZE);
 		}
 		for (i in 1...colTotal)
 		{
-			g.moveTo(i * 10, 0);
-			g.lineTo(i * 10, rowTotal * 10);
+			g.moveTo(i * GRID_SIZE, 0);
+			g.lineTo(i * GRID_SIZE, rowTotal * GRID_SIZE);
 		}
 	}
 	
@@ -171,7 +186,7 @@ class MapDisplay extends Sprite, implements IAStarClient
 	{
 		var g = graphics;
 		g.beginFill(color);
-		g.drawRect(x * 10, y * 10, 10, 10);
+		g.drawRect(x * GRID_SIZE, y * GRID_SIZE, GRID_SIZE, GRID_SIZE);
 		g.endFill();
 	}
 	
