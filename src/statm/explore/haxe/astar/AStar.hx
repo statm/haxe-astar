@@ -119,7 +119,7 @@ class AStar
 		return Std.int(x.f - y.f);
 	}
 	
-	inline private function searchPath():Vector<IntPoint>
+	private function searchPath():Vector<IntPoint>
 	{
 		var minX:Int, maxX:Int, minY:Int, maxY:Int;
 		var g:Float, f:Float, cost:Float;

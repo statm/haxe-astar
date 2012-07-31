@@ -38,7 +38,7 @@ class Main
 	
 	private static function init():Void
 	{
-		map = new MapDisplay(15, 10);
+		map = new MapDisplay(40, 40);
 		map.x = map.y = 10;
 		Lib.current.addChild(map);
 		map.drawMap();
@@ -48,12 +48,10 @@ class Main
 class MapDisplay extends Sprite, implements IAStarClient
 {
 	private inline static var THRESHOLD:Float = 0.2;
-	private inline static var GRID_SIZE:Int = 30;
+	private inline static var GRID_SIZE:Int = 10;
 	
 	public var rowTotal(default, null):Int;
 	public var colTotal(default, null):Int;
-	
-	private var stateOverlay:Shape;
 	
 	public function isWalkable(x:Int, y:Int):Bool
 	{
@@ -69,8 +67,6 @@ class MapDisplay extends Sprite, implements IAStarClient
 		rowTotal = row;
 		colTotal = col;
 		shuffle();
-		
-		addChild(stateOverlay = new Shape());
 		
 		this.addEventListener(MouseEvent.CLICK, clickHandler);
 	}
