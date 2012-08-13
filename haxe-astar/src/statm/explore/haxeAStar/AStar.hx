@@ -1,4 +1,4 @@
-package statm.explore.haxe.astar;
+package statm.explore.haxeAStar;
 
 import flash.utils.TypedDictionary;
 import flash.Vector;
@@ -8,9 +8,9 @@ import flash.Vector;
 import flash.Vector;
 import flash.Vector;
 import flash.Vector;
-import statm.explore.haxe.astar.heuristics.Diagonal;
-import statm.explore.haxe.astar.heuristics.IHeuristic;
-import statm.explore.haxe.astar.heuristics.Manhattan;
+import statm.explore.haxeAStar.heuristics.Diagonal;
+import statm.explore.haxeAStar.heuristics.IHeuristic;
+import statm.explore.haxeAStar.heuristics.Manhattan;
 
 /**
  * A* 寻路。

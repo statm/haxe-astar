@@ -1,4 +1,4 @@
-package statm.explore.haxe.astar;
+package statm.explore.haxeAStar;
 
 /**
  * 整数坐标。

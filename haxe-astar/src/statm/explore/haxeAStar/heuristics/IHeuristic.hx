@@ -1,5 +1,5 @@
-package statm.explore.haxe.astar.heuristics;
-import statm.explore.haxe.astar.Node;
+package statm.explore.haxeAStar.heuristics;
+import statm.explore.haxeAStar.Node;
 
 /**
  * 估值算法接口。

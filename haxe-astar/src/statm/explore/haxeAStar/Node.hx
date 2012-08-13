@@ -1,4 +1,4 @@
-package statm.explore.haxe.astar;
+package statm.explore.haxeAStar;
 
 /**
  * A* 节点。

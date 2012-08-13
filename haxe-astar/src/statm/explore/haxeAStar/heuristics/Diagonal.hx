@@ -1,6 +1,6 @@
-package statm.explore.haxe.astar.heuristics;
-import statm.explore.haxe.astar.AStar;
-import statm.explore.haxe.astar.Node;
+package statm.explore.haxeAStar.heuristics;
+import statm.explore.haxeAStar.AStar;
+import statm.explore.haxeAStar.Node;
 
 /**
  * 对角线估值算法。

@@ -12,10 +12,10 @@ import flash.Lib;
 import flash.text.TextField;
 import flash.ui.Keyboard;
 import flash.Vector;
-import statm.explore.haxe.astar.AStar;
-import statm.explore.haxe.astar.IAStarClient;
-import statm.explore.haxe.astar.IntPoint;
-import statm.explore.haxe.astar.Node;
+import statm.explore.haxeAStar.AStar;
+import statm.explore.haxeAStar.IAStarClient;
+import statm.explore.haxeAStar.IntPoint;
+import statm.explore.haxeAStar.Node;
 
 /**
  * A* 寻路测试。
