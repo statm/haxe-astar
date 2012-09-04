@@ -2,12 +2,6 @@ package statm.explore.haxeAStar;
 
 import flash.utils.TypedDictionary;
 import flash.Vector;
-import flash.Vector;
-import flash.Vector;
-import flash.Vector;
-import flash.Vector;
-import flash.Vector;
-import flash.Vector;
 import statm.explore.haxeAStar.heuristics.Diagonal;
 import statm.explore.haxeAStar.heuristics.IHeuristic;
 import statm.explore.haxeAStar.heuristics.Manhattan;
